@@ -1,24 +1,56 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { Test } from "@nestjs/testing";
+import { AppModule } from "../src/app.module";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
 
-describe('AppController (e2e)', () => {
+// Simulating the server
+// We use global types
+describe('App e2e', () => {
   let app: INestApplication;
+  let prisma:PrismaService
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+      }),
+    );
     await app.init();
+    prisma = app.get(PrismaService)
+    await prisma.cleanDb()
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await app.close();
   });
+
+  it.todo('should pass');
+
+  describe('Auth',()=>{
+    describe('Signup',()=>{
+      it.todo('should pass');  
+    })
+
+    describe('Signin',()=>{})
+  })
+
+
+  describe('User',()=>{
+    describe('Get User',()=>{})
+    describe('Edit user',()=>{})
+  })
+
+  describe('Bookmarks',()=>{
+    describe('Get Bookmarks',()=>{})
+    describe('Get Bookmarks by id',()=>{})
+    describe('Create Bookmarks',()=>{})
+    describe('Edit Bookmarks',()=>{})
+    describe('Delete Bookmarks',()=>{})
+  })
 });
