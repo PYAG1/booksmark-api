@@ -1,15 +1,15 @@
 import {
     Body,
-  Controller,
-  Get,
-  Put,
-  UseGuards,
+    Controller,
+    Get,
+    Patch,
+    UseGuards
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator/getUserDecorator';
 import { AuthGuard } from '../auth/verifyJwt';
-import { UserServices } from './user.service';
 import { EditUser } from './dto';
+import { UserServices } from './user.service';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -25,7 +25,7 @@ constructor(private userService:UserServices){}
     };
   }
 
-  @Put('/edit')
+@Patch('/edit')
   editUser(@Body() dto:EditUser,@GetUser() user:User){
 return this.userService.editUser(dto,user)
   }
